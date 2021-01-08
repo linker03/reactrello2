@@ -34,25 +34,25 @@ const Form = styled.form`
 `;
 
 export interface ICardCreateFormProps {
-  columnId: number;
+  column: string;
   author: string;
   close: () => void;
 }
 
 const CardCreateForm: React.FC<ICardCreateFormProps> = ({
-  columnId,
+  column,
   author,
   close,
 }) => {
   type CreateCardFormState = {
-    columnId: number;
+    column: string;
     title: string;
     body: string;
     author: string;
   };
 
   const [state, setState] = React.useState<CreateCardFormState>({
-    columnId: columnId,
+    column: column,
     title: '',
     body: '',
     author: author,
@@ -69,7 +69,7 @@ const CardCreateForm: React.FC<ICardCreateFormProps> = ({
 
   function submitHandler(event: React.FormEvent) {
     event.preventDefault();
-    addCard(state.columnId, state.title, state.body);
+    addCard(state.column, state.title, state.body);
     close();
   }
 

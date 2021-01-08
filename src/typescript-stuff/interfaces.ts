@@ -6,9 +6,19 @@ export interface IParams {
 export interface ICard {
   id: number;
   title: string;
+  column: string;
   body: string;
   author: string;
   commentsArray: number[];
+}
+
+export interface ICardDenormalized {
+  id: number;
+  title: string;
+  column: string;
+  body: string;
+  author: string;
+  commentsArray: IComment[];
 }
 
 export interface ICardStorage {
@@ -37,12 +47,10 @@ export interface IColumnStorage {
 }
 
 export interface IContext {
-  addCard: (columnId: number, title: string, body: string) => void;
+  addCard: (column: string, title: string, body: string) => void;
   editCard: (cardId: number, newTitle: string, newBody: string) => void;
-  deleteCard: (columnId: number, cardId: number) => void;
+  deleteCard: (cardId: number) => void;
   addComment: (cardId: number, text: string) => void;
   editComment: (commentId: number, newComment: string) => void;
   delComment: (cardId: number, commentId: number) => void;
-  getComment: (idArray: number[]) => IComment[];
-  comments: ICommentStorage;
 }

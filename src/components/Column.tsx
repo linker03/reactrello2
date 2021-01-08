@@ -4,7 +4,7 @@ import CardItem from './Сard';
 import Modal from './Сardportal';
 import ModalWrapper from './Modal-wrapper';
 import CardCreateForm from './Create-card-form';
-import { ICard } from '../typescript-stuff/interfaces';
+import { ICardDenormalized } from '../typescript-stuff/interfaces';
 
 const ColumnWrapper = styled.div`
   margin-bottom: 30px;
@@ -81,13 +81,12 @@ const ModalContent = styled.div`
 `;
 
 export interface IColumnProps {
-  columnId: number;
   author: string;
   title: string;
-  data: ICard[];
+  data: ICardDenormalized[];
 }
 
-const Column: React.FC<IColumnProps> = ({ columnId, author, title, data }) => {
+const Column: React.FC<IColumnProps> = ({ author, title, data }) => {
   type ColumnState = {
     showCreateModal: boolean;
   };
@@ -106,10 +105,8 @@ const Column: React.FC<IColumnProps> = ({ columnId, author, title, data }) => {
         className="column__title"
         defaultValue={title}
       ></textarea>
-      {data.map((card: ICard) => {
-        return (
-          <CardItem key={card.id} columnId={columnId} card={card}></CardItem>
-        );
+      {data.map((card: ICardDenormalized) => {
+        return <CardItem key={card.id} column={title} card={card}></CardItem>;
       })}
       <div
         className="column__addcard"
@@ -124,7 +121,7 @@ const Column: React.FC<IColumnProps> = ({ columnId, author, title, data }) => {
           <ModalWrapper>
             <ModalContent>
               <CardCreateForm
-                columnId={columnId}
+                column={title}
                 author={author}
                 close={closeModal}
               />

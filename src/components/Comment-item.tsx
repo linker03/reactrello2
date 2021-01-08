@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Context from '../context';
-import { IContext, ICommentItemProps } from '../typescript-stuff/interfaces';
+import { IContext, IComment } from '../typescript-stuff/interfaces';
 
 const CommentWrapper = styled.div`
   display: grid;
@@ -21,6 +21,11 @@ const CommentWrapper = styled.div`
   }
 `;
 
+export interface ICommentItemProps {
+  comment: IComment;
+  cardId: number;
+}
+
 const CommentItem: React.FC<ICommentItemProps> = ({ comment, cardId }) => {
   const [state, setState] = useState({
     comment: comment.text,
@@ -29,7 +34,7 @@ const CommentItem: React.FC<ICommentItemProps> = ({ comment, cardId }) => {
   const { editComment, delComment } = React.useContext(Context) as IContext;
 
   const endEdit = () => {
-    editComment(cardId, comment.id, state.comment);
+    editComment(comment.id, state.comment);
   };
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {

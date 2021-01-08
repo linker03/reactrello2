@@ -5,11 +5,14 @@ export interface IParams {
 
 export interface ICard {
   id: number;
-  column: string;
   title: string;
   body: string;
   author: string;
-  comments: IComment[];
+  commentsArray: number[];
+}
+
+export interface ICardStorage {
+  [key: number]: ICard;
 }
 
 export interface IComment {
@@ -18,32 +21,28 @@ export interface IComment {
   text: string;
 }
 
-export interface IColumnProps {
-  author: string;
+export interface ICommentStorage {
+  [key: number]: IComment;
+}
+
+export interface IColumn {
+  id: number;
   title: string;
-  data: ICard[];
+  cardsArray: number[];
+}
+
+export interface IColumnStorage {
+  [key: number]: IColumn;
+  columnOrder: number[];
 }
 
 export interface IContext {
-  addCard: (column: string, title: string, body: string) => void;
+  addCard: (columnId: number, title: string, body: string) => void;
   editCard: (cardId: number, newTitle: string, newBody: string) => void;
-  deleteCard: (cardId: number) => void;
+  deleteCard: (columnId: number, cardId: number) => void;
   addComment: (cardId: number, text: string) => void;
-  editComment: (cardId: number, commentId: number, newComment: string) => void;
+  editComment: (commentId: number, newComment: string) => void;
   delComment: (cardId: number, commentId: number) => void;
-}
-
-export interface ICardItemProps {
-  card: ICard;
-}
-
-export interface ICommentItemProps {
-  comment: IComment;
-  cardId: number;
-}
-
-export interface ICardCreateFormProps {
-  column: string;
-  author: string;
-  close: () => void;
+  getComment: (idArray: number[]) => IComment[];
+  comments: ICommentStorage;
 }

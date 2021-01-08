@@ -1,14 +1,10 @@
 import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import CardModal from './cardportal';
-import ModalWrapper from './modal-wrapper';
-import CommentItem from './comment-item';
+import CardModal from './Сardportal';
+import ModalWrapper from './Modal-wrapper';
+import CommentItem from './Comment-item';
 import Context from '../context';
-import {
-  ICardItemProps,
-  IComment,
-  IContext,
-} from '../typescript-stuff/interfaces';
+import { ICard, IComment, IContext } from '../typescript-stuff/interfaces';
 
 const CardWrapper = styled.div`
   padding: 5px;
@@ -104,10 +100,16 @@ const CreateComment = styled.div`
   }
 `;
 
-const CardItem: React.FC<ICardItemProps> = ({ card }) => {
+export interface ICardItemProps {
+  card: ICard;
+  columnId: number;
+}
+
+const CardItem: React.FC<ICardItemProps> = ({ card, columnId }) => {
   type cardState = {
     showModal: boolean;
     comment: string;
+    commentsArray: IComment[];
   };
 
   type cardEditState = {
@@ -119,6 +121,7 @@ const CardItem: React.FC<ICardItemProps> = ({ card }) => {
   const [state, setState] = useState<cardState>({
     showModal: false,
     comment: '',
+    commentsArray: [],
   });
 
   const [cardEdit, setCardEdit] = useState<cardEditState>({
@@ -127,11 +130,27 @@ const CardItem: React.FC<ICardItemProps> = ({ card }) => {
     body: card.body,
   });
 
+  const {
+    addComment,
+    editCard,
+    deleteCard,
+    getComment,
+    comments,
+  } = React.useContext(Context) as IContext;
+
   const escFunction = useCallback((event) => {
     if (event.keyCode === 27) {
       setState((state) => ({ ...state, showModal: false }));
     }
   }, []);
+
+  const fillCommentsArray = () => {
+    setState((prev) => ({
+      ...prev,
+      commentsArray: getComment(card.commentsArray),
+    }));
+    console.log('reload comments', state.commentsArray);
+  };
 
   useEffect(() => {
     document.addEventListener('keydown', escFunction, false);
@@ -140,6 +159,10 @@ const CardItem: React.FC<ICardItemProps> = ({ card }) => {
       document.removeEventListener('keydown', escFunction, false);
     };
   }, [state.showModal, escFunction]);
+
+  // useEffect(() => {
+  //   fillCommentsArray();
+  // });
 
   const onClickOpenModal = () => {
     setState((state) => ({ ...state, showModal: true }));
@@ -171,17 +194,13 @@ const CardItem: React.FC<ICardItemProps> = ({ card }) => {
   };
 
   const delCard = () => {
-    deleteCard(card.id);
+    deleteCard(columnId, card.id);
     setState((state) => ({ ...state, showModal: false }));
   };
 
-  const comments = card.comments.map((comment: IComment) => {
-    return <CommentItem key={comment.id} comment={comment} cardId={card.id} />;
+  const comments1 = card.commentsArray.map((key: number) => {
+    return <CommentItem comment={comments[key]} cardId={card.id} />;
   });
-
-  const { addComment, editCard, deleteCard } = React.useContext(
-    Context
-  ) as IContext;
 
   return (
     <Fragment>
@@ -213,7 +232,7 @@ const CardItem: React.FC<ICardItemProps> = ({ card }) => {
                 defaultValue={card.body}
               ></textarea>
               <div className="comments">
-                {comments}
+                {comments1}
                 <CreateComment>
                   Create comment:
                   <input

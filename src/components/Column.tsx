@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import CardItem from './card';
-import Modal from './cardportal';
-import ModalWrapper from './modal-wrapper';
-import CardCreateForm from './create-card-form';
-import { IColumnProps, ICard } from '../typescript-stuff/interfaces';
+import CardItem from './Сard';
+import Modal from './Сardportal';
+import ModalWrapper from './Modal-wrapper';
+import CardCreateForm from './Create-card-form';
+import { ICard } from '../typescript-stuff/interfaces';
 
 const ColumnWrapper = styled.div`
   margin-bottom: 30px;
@@ -80,7 +80,14 @@ const ModalContent = styled.div`
   }
 `;
 
-const Column: React.FC<IColumnProps> = ({ author, title, data }) => {
+export interface IColumnProps {
+  columnId: number;
+  author: string;
+  title: string;
+  data: ICard[];
+}
+
+const Column: React.FC<IColumnProps> = ({ columnId, author, title, data }) => {
   type ColumnState = {
     showCreateModal: boolean;
   };
@@ -91,11 +98,6 @@ const Column: React.FC<IColumnProps> = ({ author, title, data }) => {
     setModal({ showCreateModal: false });
   }
 
-  const columnCards = data.map((card: ICard) => {
-    if (card.column === title) {
-      return <CardItem key={card.id} card={card}></CardItem>;
-    }
-  });
   return (
     <ColumnWrapper>
       <textarea
@@ -104,7 +106,11 @@ const Column: React.FC<IColumnProps> = ({ author, title, data }) => {
         className="column__title"
         defaultValue={title}
       ></textarea>
-      {columnCards}
+      {data.map((card: ICard) => {
+        return (
+          <CardItem key={card.id} columnId={columnId} card={card}></CardItem>
+        );
+      })}
       <div
         className="column__addcard"
         onClick={() => {
@@ -118,7 +124,7 @@ const Column: React.FC<IColumnProps> = ({ author, title, data }) => {
           <ModalWrapper>
             <ModalContent>
               <CardCreateForm
-                column={title}
+                columnId={columnId}
                 author={author}
                 close={closeModal}
               />

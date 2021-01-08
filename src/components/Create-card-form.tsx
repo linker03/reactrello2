@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Context from '../context';
-import { ICardCreateFormProps, IContext } from '../typescript-stuff/interfaces';
+import { IContext } from '../typescript-stuff/interfaces';
 
 const Form = styled.form`
   display: flex;
@@ -33,20 +33,26 @@ const Form = styled.form`
   }
 `;
 
+export interface ICardCreateFormProps {
+  columnId: number;
+  author: string;
+  close: () => void;
+}
+
 const CardCreateForm: React.FC<ICardCreateFormProps> = ({
-  column,
+  columnId,
   author,
   close,
 }) => {
   type CreateCardFormState = {
-    column: string;
+    columnId: number;
     title: string;
     body: string;
     author: string;
   };
 
   const [state, setState] = React.useState<CreateCardFormState>({
-    column: column,
+    columnId: columnId,
     title: '',
     body: '',
     author: author,
@@ -63,7 +69,7 @@ const CardCreateForm: React.FC<ICardCreateFormProps> = ({
 
   function submitHandler(event: React.FormEvent) {
     event.preventDefault();
-    addCard(state.column, state.title, state.body);
+    addCard(state.columnId, state.title, state.body);
     close();
   }
 
